@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Congkak AI</title>
+    <link rel="icon" type="image/x-icon" href=favicon.ico>
+    <link rel="stylesheet" type="text/css" href=style.css>
+</head>
+<body>
+
+    <div id="container">
+
+        <canvas id="canvas1"></canvas>
+
+        <form id="controls">
+            <h1>
+                Congkak Simple Min Max Algorithm
+            </h1>
+
+            <div class="name-group">
+                <label>Levels:</label>
+                <select class="input-sync levels" id="levelsSelect" data-sync="levels">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+
+            <div class="name-group">
+                <label>Start Player:</label>
+                <select class="input-sync startPlayer" id="startPlayerSelect" data-sync="startPlayer">
+                    <option value="user">User</option>
+                    <option value="ai">AI</option>
+                </select>
+            </div>
+
+            <div class="name-group">
+                <label>Animation Speed:</label>
+                <select class="input-sync animationSpeed" id="animationSpeedSelect" data-sync="animationSpeed">
+                    <option value="slow">Slow</option>
+                    <option value="medium">Medium</option>
+                    <option value="fast">Fast</option>
+                </select>
+            </div>
+
+            <button type="button" id="reloadButton">Reset Board</button>
+
+            <h1>Congkak Rules</h1>
+            <div class="rules">
+                <p>Pick up all pieces from one of your houses and distribute them clockwise, dropping one piece into each house. Be sure to drop a piece into your storehouse but skip your opponent’s storehouse.</p>
+                <p>If your last piece lands in a house with pieces, pick them all up and continue distributing them clockwise around the board.</p>
+                <p>If your last piece lands in your storehouse, choose any house on your side and take another turn.</p>
+                <p>If your last piece lands in an empty house on your side, place all pieces from the house directly across into your storehouse. This ends your turn immediately.</p>
+                <p>If your last piece lands in an empty house on your opponent’s side, your turn ends immediately.</p>
+                <p>Alternate turns until all pieces are moved into the storehouses. The player with the most pieces in their storehouse wins.</p>
+            </div>
+            
+        </form>
+            
+    </div>
+    <script src="congkak_minmax.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
