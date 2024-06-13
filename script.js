@@ -181,7 +181,7 @@ class Congkak
 
         // Controls
         this.speed = 50;
-        this.diff = 3;
+        this.diff = 1;
         this.player = 2;
 
         this.move_single_new_x_pos = -1;
@@ -883,13 +883,14 @@ function logButtons(e)
                 if (circle_hovers[i] == 1 && game.board[i] > 0)
                 {
                     CURSOR.pressed = true;
-                    game.select_hole(i);
                     if (i < 7 )
                     {
+                        game.select_hole(i);
                         game.display_text = 'Computer Selected Hole ' + i;
                     }
                     else if (i > 7 && i < 15)
                     {
+                        game.select_hole(i);
                         game.display_text = 'User Selected Hole ' + i;
                     }
                     game.player = 0;
