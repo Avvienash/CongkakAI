@@ -711,7 +711,7 @@ class Congkak
                 }
                 else if (this.board[i] == 1)
                 {
-                    if (this.player == 1 && i < 7)
+                    if (this.player == 1 && i < 7 && this.board[14-i] > 0)
                     {
                         while (this.board[14-i] > 0)
                         {
@@ -728,7 +728,7 @@ class Congkak
                         this.single_moves.push([i, 7]);
                         
                     }
-                    else if (this.player == 2 && i > 7)
+                    else if (this.player == 2 && i > 7 && this.board[14-i] > 0)
                     {
                         while (this.board[14-i] > 0)
                         {
