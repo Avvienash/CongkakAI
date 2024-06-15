@@ -2,12 +2,17 @@
 // Global Variables
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-let level, startPlayer, animationSpeed, ResetButtonClicked;
+let animationSpeed, ResetButtonClicked, Player1Mode, Player2Mode, startPlayer;
 let CURSOR = {
     pressed: false,
     x: 0,
     y: 0
 };
+
+const base_color = '#1d3f58';
+const player_1_color = '#ffcc00';
+const player_2_color = '#ACECA1';
+const marble_color = '#95B8D1';
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CANVAS SETUP
@@ -100,30 +105,33 @@ window.addEventListener('resize', resizeCanvas);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 document.addEventListener('DOMContentLoaded', () => {
-    const levelsSelect = document.getElementById('levelsSelect');
-    const startPlayerSelect = document.getElementById('startPlayerSelect');
+    const Player1Select = document.getElementById('Player1Select');
+    const Player2Select = document.getElementById('Player2Select');
     const animationSpeedSelect = document.getElementById('animationSpeedSelect');
     const reloadButton = document.getElementById('reloadButton');
+    const startPlayerSelect = document.getElementById('startPlayerSelect');
 
     // Set default values
-    level = levelsSelect.value;
-    startPlayer = startPlayerSelect.value;
     animationSpeed = animationSpeedSelect.value;
     ResetButtonClicked = false;
-    console.log('Selected Level:', level);
-    console.log('Start Player:', startPlayer);
+    Player1Mode = Player1Select.value;
+    Player2Mode = Player2Select.value;
+    startPlayer = startPlayerSelect.value;
+
+    console.log('Player 1 Mode:', Player1Mode);
+    console.log('Player 2 Mode:', Player2Mode);
     console.log('Animation Speed:', animationSpeed);
 
-    // Function to handle level selection change
-    levelsSelect.addEventListener('change', () => {
-        level = levelsSelect.value;
-        console.log('Selected Level:', level);
-    });
 
-    // Function to handle start player selection change
-    startPlayerSelect.addEventListener('change', () => {
-        startPlayer = startPlayerSelect.value;
-        console.log('Start Player:', startPlayer);
+    // Function to handle Player selection change
+    Player1Select.addEventListener('change', () => {
+        Player1Mode = Player1Select.value;
+        console.log('Player 1 Mode:', Player1Mode);
+    });
+    
+    Player2Select.addEventListener('change', () => {
+        Player2Mode = Player2Select.value;
+        console.log('Player 2 Mode:', Player2Mode);
     });
 
     // Function to handle animation speed selection change
@@ -138,6 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Reset Button Clicked');
     });
 
+    // Function to handle start player selection change
+    startPlayerSelect.addEventListener('change', () => {
+        startPlayer = startPlayerSelect.value;
+        console.log('Start Player:', startPlayer);
+    });
+
 });
 
 
@@ -145,7 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // Draw Functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function clearCanvas() {
+function clearCanvas() 
+{
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
@@ -158,14 +173,15 @@ class Congkak
     constructor()
     {
         this.board = [7,7,7,7,7,7,7,0,7,7,7,7,7,7,7,0];
-        //this.board = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+        this.marbles_selected_color = marble_color;
+
         // make copy of the board for display
         this.display_board = this.board.slice();
         this.display_board_array = [];
         this.current_circle = -1;
         
         
-        this.display_text = 'Player 1 Turn';
+        this.display_text = 'Click Set Board to Begin';
 
 
 
@@ -178,11 +194,11 @@ class Congkak
         
         this.next_player = -1;
 
-
         // Controls
         this.speed = 50;
-        this.diff = 1;
-        this.player = 2;
+        this.player = -1;
+        this.player1_mode = 0;
+        this.player2_mode = 0;
 
         this.move_single_new_x_pos = -1;
         this.move_single_new_y_pos = -1;
@@ -197,7 +213,9 @@ class Congkak
     initialisation_marbles()
     {
         this.board = [7,7,7,7,7,7,7,0,7,7,7,7,7,7,7,0];
-        //this.board = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+        this.display_text = 'Click Set Board to Begin';
+        this.marbles_selected_color = marble_color;
+
         // make copy of the board for display
         this.display_board = this.board.slice();
         this.display_board_array = [];
@@ -222,28 +240,41 @@ class Congkak
         this.single_moves = [];
 
         /// Initialisation of the controls
-        if (level == 'easy')
+        if (Player1Mode == 'user')
         {
-            this.diff = 1;
+            this.player1_mode = 0;
         }
-        else if (level == 'medium')
+        else if (Player1Mode == 'easy')
         {
-            this.diff = 2;
+            this.player1_mode = 1;
         }
-        else if (level == 'hard')
+        else if (Player1Mode == 'medium')
         {
-            this.diff = 3;
+            this.player1_mode = 2;
+        }
+        else if (Player1Mode == 'hard')
+        {
+            this.player1_mode = 3;
+        }
+
+        if (Player2Mode == 'user')
+        {
+            this.player2_mode = 0;
+        }
+        else if (Player2Mode == 'easy')
+        {
+            this.player2_mode = 1;
+        }
+        else if (Player2Mode == 'medium')
+        {
+            this.player2_mode = 2;
+        }
+        else if (Player2Mode == 'hard')
+        {
+            this.player2_mode = 3;
         }
 
 
-        if (startPlayer == 'user')
-        {
-            this.player = 2;
-        }
-        else if (startPlayer == 'ai')
-        {
-            this.player = 1;
-        }
 
         if (animationSpeed == 'slow')
         {
@@ -258,19 +289,16 @@ class Congkak
             this.speed = 100;
         }
 
-        // console.log("diff");
-        // console.log(this.diff);
-        // console.log("player");
-        // console.log(this.player);
-        // console.log("speed");
-        // console.log(this.speed);
+        if (startPlayer == '1')
+        {
+            this.player = 1;
+        }
+        else if (startPlayer == '2')
+        {
+            this.player = 2;
+        }
+        console.log("Player Start", this.player);
 
-        // console.log("Animation Speed");
-        // console.log(animationSpeed);
-        // console.log("Start Player");
-        // console.log(startPlayer);
-        // console.log("Level");
-        // console.log(level);
 
         //// Initialisation of the marbles
 
@@ -345,7 +373,7 @@ class Congkak
     draw_frame()
     {
                 // Draw the stadium
-        ctx.strokeStyle = '#1d3f58'; // Stadium stroke color
+        ctx.strokeStyle = base_color
         ctx.lineWidth = 4; // Set line width for better visibility
         ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Transparent fill
         ctx.font = '20px Arial';
@@ -377,10 +405,14 @@ class Congkak
             }
 
             ctx.fillStyle = 'rgba(0, 0, 0, 0)'; // Transparent fill
-            ctx.strokeStyle = '#1d3f58'; // Stadium stroke color
+            ctx.strokeStyle = base_color;
             if (circle_hovers[index] == 1) 
             {
-                ctx.strokeStyle = '#ffcc00';
+                ctx.strokeStyle = player_1_color;
+            }
+            else if (circle_hovers[index] == 2)
+            {
+                ctx.strokeStyle = player_2_color;
             }
             
             ctx.beginPath();
@@ -390,11 +422,16 @@ class Congkak
             
             // Draw the number above each circle
             // console.log(this.display_board);
-            ctx.fillStyle = '#1d3f58'; // Set text color
+            ctx.fillStyle = base_color; // Set text color
             if (circle_hovers[index] == 1) 
             {
-                ctx.fillStyle = '#ffcc00';
+                ctx.fillStyle = player_1_color;
             }
+            else if (circle_hovers[index] == 2)
+            {
+                ctx.fillStyle = player_2_color;
+            }
+
             if (index < 7) {
                 ctx.fillText(this.display_board[index], pos[0], pos[1] - drawingRadius - 20);
             } else {
@@ -404,7 +441,7 @@ class Congkak
 
 
         // Draw the Display Text
-        ctx.fillStyle = '#1d3f58'; // Set text color
+        ctx.fillStyle = base_color
         ctx.font = '30px Arial';
         ctx.fillText(this.display_text, canvas.width / 2, stadiumY-50);
 
@@ -414,6 +451,7 @@ class Congkak
     draw_marbles(index = -1)
     {
         //ctx.fillStyle = '#ffcc00';
+        ctx.strokeStyle = base_color;
         
         for (let i = 0; i < this.marbles_x_pos.length; i++) 
         {
@@ -422,10 +460,10 @@ class Congkak
                 continue;
             }
 
-            ctx.fillStyle = '#95B8D1';
-            if ((circle_hovers[this.marbles_circle[i]] == 1  && ( this.current_circle == -1 || this.current_circle == this.marbles_circle[i] ))|| this.marbles_selected[i] == 1)
+            ctx.fillStyle = marble_color;
+            if ((circle_hovers[this.marbles_circle[i]] != 0  && ( this.current_circle == -1 || this.current_circle == this.marbles_circle[i] ))|| this.marbles_selected[i] == 1)
             {
-                ctx.fillStyle = '#ffcc00';
+                ctx.fillStyle = this.marbles_selected_color;
             }
 
             ctx.beginPath();
@@ -436,10 +474,10 @@ class Congkak
 
         if (index != -1)
         {
-            ctx.fillStyle = '#95B8D1';
-            if (circle_hovers[this.marbles_circle[index]] == 1 || this.marbles_selected[index] == 1)
+            ctx.fillStyle = marble_color;
+            if (circle_hovers[this.marbles_circle[index]] != 0 || this.marbles_selected[index] == 1)
             {
-                ctx.fillStyle = '#ffcc00';
+                ctx.fillStyle = this.marbles_selected_color;
             }
             ctx.beginPath();
             ctx.arc(this.marbles_x_pos[index], this.marbles_y_pos[index], circleRadius / 5, 0, Math.PI * 2);
@@ -612,20 +650,33 @@ class Congkak
         this.board[hole] = 0;
         this.current_circle = hole;
 
+        if (this.player == 1 && hole > 6)
+        {
+            this.display_text = 'Invalid Move';
+            console.log("Invalid Move");
+        }
+        else if (this.player == 2 && hole < 8)
+        {
+            this.display_text = 'Invalid Move';
+            console.log("Invalid Move");
+        }
+
         let i = hole;
 
         while (stones > 0)
         {
-            i = (i + 1) % 16;
+            i = i + 1
             if (this.player == 1 && i == 15)
             {
-                continue;
+                i = i + 1;
             }
 
             if (this.player == 2 && i == 7)
             {
-                continue;
+                i = i + 1;
             }
+
+            i = i % 16;
 
 
             this.board[i] = this.board[i] + 1;
@@ -668,6 +719,11 @@ class Congkak
                             this.display_board_array.push(this.board.slice());
                             this.single_moves.push([14-i, 7]);
                         }
+
+                        this.board[7] = this.board[7] + 1
+                        this.board[i] = 0;
+                        this.display_board_array.push(this.board.slice());
+                        this.single_moves.push([i, 7]);
                         
                     }
                     else if (this.player == 2 && i > 7)
@@ -680,6 +736,12 @@ class Congkak
                             this.display_board_array.push(this.board.slice());
                             this.single_moves.push([14-i, 15]);
                         }
+
+                        this.board[15] = this.board[15] + 1
+                        this.board[i] = 0;
+                        this.display_board_array.push(this.board.slice());
+                        this.single_moves.push([i, 15]);
+
                     }
                     
                     this.next_player = (this.player == 1) ? 2 : 1;
@@ -706,10 +768,33 @@ class Congkak
         }
         else if (this.player == 1)
         {
-            this.display_text = "Computer's Turn";
             circle_hovers.fill(0);
-
-            if (this.diff == 1)
+            this.marbles_selected_color = marble_color;
+            if (this.player1_mode == 0)
+            {
+                this.display_text = 'Player 1 Turn, Select a Hole';
+                for (let i = 0; i < 7; i++)
+                {
+                    let distance = Math.sqrt((CURSOR.x - circle_positions[i][0]) * (CURSOR.x - circle_positions[i][0]) + (CURSOR.y - circle_positions[i][1]) * (CURSOR.y - circle_positions[i][1]));
+                    if (distance < circleRadius)
+                    {
+                        circle_hovers[i] = 1;
+                        this.marbles_selected_color = player_1_color;
+                        break;
+                    }
+                }
+            }
+            else if (this.player1_mode == 1)
+            {
+                let worst_move = bestMoveMinmaxAlphaBetaPruningHash(this.board.slice(),this.player-1,6,1);
+                circle_hovers[worst_move] = 1;
+                this.select_hole(worst_move);
+                this.display_text = 'Player 1 Selected Hole ' + worst_move;
+                this.player = 0;
+                this.marbles_selected_color = player_1_color;
+                console.log("Computer 1 Depth -5");
+            }
+            else if (this.player1_mode == 2)
             {
                 // get non empty holes
                 let non_empty_holes = [];
@@ -725,48 +810,78 @@ class Congkak
                 circle_hovers[random_hole] = 1;
                 this.select_hole(random_hole);
                 this.player = 0;
-                this.display_text = 'Computer Selected Hole ' + random_hole;
+                this.display_text = 'Player 1 Selected Hole ' + random_hole;
+                this.marbles_selected_color = player_1_color;
+
+                console.log("Computer 1 Random");
             }
-            else
+            else if (this.player1_mode == 3)
             {
-                if (this.diff == 2)
-                {
-                    let best_move = bestMoveMinmaxAlphaBetaPruningHash(this.board.slice(), 0, 1);
-                    console.log(best_move);
-                    circle_hovers[best_move] = 1;
-                    this.select_hole(best_move);
-                    this.player = 0;
-                    this.display_text = 'Computer Selected Hole ' + best_move;
-                }
-                else
-                {
-                    let best_move = bestMoveMinmaxAlphaBetaPruningHash(this.board.slice(), 0, 5);
-                    console.log(best_move);
-                    circle_hovers[best_move] = 1;
-                    this.select_hole(best_move);
-                    this.player = 0;
-                    this.display_text = 'Computer Selected Hole ' + best_move;
-                }
-                
+                let best_move = bestMoveMinmaxAlphaBetaPruningHash(this.board.slice(),this.player-1, 6,0);
+                circle_hovers[best_move] = 1;
+                this.select_hole(best_move);
+                this.display_text = 'Player 1 Selected Hole ' + best_move;
+                this.player = 0;
+                this.marbles_selected_color = player_1_color;
+                console.log("Computer 1 Depth 5");
             }
-
-
-
-
-
         }
         else if (this.player == 2)
         {
-            this.display_text = "User's Turn, Please Select Hole";
             circle_hovers.fill(0);
-            for (let i = 8; i < 15; i++)
+            this.marbles_selected_color = marble_color;
+            if (this.player2_mode == 0)
             {
-                let distance = Math.sqrt((CURSOR.x - circle_positions[i][0]) * (CURSOR.x - circle_positions[i][0]) + (CURSOR.y - circle_positions[i][1]) * (CURSOR.y - circle_positions[i][1]));
-                if (distance < circleRadius)
+                this.display_text = 'Player 2 Turn, Select a Hole';
+                for (let i = 8; i < 15; i++)
                 {
-                    circle_hovers[i] = 1;
-                    break;
+                    let distance = Math.sqrt((CURSOR.x - circle_positions[i][0]) * (CURSOR.x - circle_positions[i][0]) + (CURSOR.y - circle_positions[i][1]) * (CURSOR.y - circle_positions[i][1]));
+                    if (distance < circleRadius)
+                    {
+                        circle_hovers[i] = 2;
+                        this.marbles_selected_color = player_2_color;
+                        break;
+                    }
                 }
+            }
+            else if (this.player2_mode == 1)
+            {
+                let worst_move = bestMoveMinmaxAlphaBetaPruningHash(this.board.slice(),this.player-1, 6,1);
+                circle_hovers[worst_move] = 2;
+                this.select_hole(worst_move);
+                this.display_text = 'Player 2 Selected Hole ' + worst_move;
+                this.player = 0;
+                this.marbles_selected_color = player_2_color;
+                console.log("Computer 2 Depth -5");
+            }
+            else if (this.player2_mode == 2)
+            {
+                let non_empty_holes = [];
+                for (let i = 8; i < 15; i++)
+                {
+                    if (this.board[i] > 0)
+                    {
+                        non_empty_holes.push(i);
+                    }
+                }
+
+                let random_hole = non_empty_holes[Math.floor(Math.random() * non_empty_holes.length)];
+                circle_hovers[random_hole] = 2;
+                this.select_hole(random_hole);
+                this.player = 0;
+                this.display_text = 'Player 2 Selected Hole ' + random_hole;
+                this.marbles_selected_color = player_2_color;
+                console.log("Computer 2 Random");
+            }
+            else if (this.player2_mode == 3)
+            {
+                let best_move = bestMoveMinmaxAlphaBetaPruningHash(this.board.slice(),this.player-1, 6,0);
+                circle_hovers[best_move] = 2;
+                this.select_hole(best_move);
+                this.display_text = 'Player 2 Selected Hole ' + best_move;
+                this.player = 0;
+                this.marbles_selected_color = player_2_color;
+                console.log("Computer 2 Depth 5");
             }
         }
         else if (this.player == 0)
@@ -794,8 +909,6 @@ class Congkak
                         }
                 }
                 
-
-
                 this.calculate_move_marble(move[0], move[1]);
 
             }
@@ -837,27 +950,29 @@ class Congkak
     {
         if (this.board.slice(0,7).every((val, i, arr) => val === arr[0]) && this.board.slice(8,15).every((val, i, arr) => val === arr[0]))
         {
+            
             console.log("Game Over");
             this.player = -1;
             circle_hovers.fill(0);
-
-
             if (this.board[7] > this.board[15])
             {
-                this.display_text = 'Computer Wins';
+                this.display_text = 'Player 1 Wins';
                 circle_hovers[7] = 1;
             }
             else if (this.board[7] < this.board[15])
             {
-                this.display_text = 'User Wins';
-                circle_hovers[15] = 1;
+                this.display_text = 'Player 2 Wins';
+                circle_hovers[15] = 2;
             }
             else
             {
                 this.display_text = 'Draw';
                 circle_hovers[7] = 1;
-                circle_hovers[15] = 1;
+                circle_hovers[15] = 2;
             }
+
+            this.selected_marbles = [];
+            this.marbles_selected_color = marble_color;
         }
         
     }
@@ -880,18 +995,18 @@ function logButtons(e)
         {
             for (let i = 0; i < 16; i++)
             {
-                if (circle_hovers[i] == 1 && game.board[i] > 0)
+                if (circle_hovers[i] != 0 && game.board[i] > 0)
                 {
                     CURSOR.pressed = true;
                     if (i < 7 )
                     {
                         game.select_hole(i);
-                        game.display_text = 'Computer Selected Hole ' + i;
+                        game.display_text = 'Player 1 Selected Hole ' + i;
                     }
                     else if (i > 7 && i < 15)
                     {
                         game.select_hole(i);
-                        game.display_text = 'User Selected Hole ' + i;
+                        game.display_text = 'Player 2 Selected Hole ' + i;
                     }
                     game.player = 0;
                 }

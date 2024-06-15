@@ -19,21 +19,33 @@
             </h1>
 
             <div class="name-group">
-                <label>Levels:</label>
-                <select class="input-sync levels" id="levelsSelect" data-sync="levels">
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
+                <label>Player 1 (up):</label>
+                <select class="input-sync Player1" id="Player1Select" data-sync="Player1">
+                    <option value="user">User</option>
+                    <option value="easy">Computer Easy </option> 
+                    <option value="medium">Computer Medium</option>
+                    <option value="hard">Computer Hard</option>
+                </select>
+            </div>
+
+            <div class="name-group">
+                <label>Player 2 (down):</label>
+                <select class="input-sync Player2" id="Player2Select" data-sync="Player2">
+                    <option value="user">User</option>
+                    <option value="easy">Computer Easy </option> 
+                    <option value="medium">Computer Medium</option>
+                    <option value="hard">Computer Hard</option>
                 </select>
             </div>
 
             <div class="name-group">
                 <label>Start Player:</label>
                 <select class="input-sync startPlayer" id="startPlayerSelect" data-sync="startPlayer">
-                    <option value="user">User</option>
-                    <option value="ai">AI</option>
+                    <option value="1">Player 1</option>
+                    <option value="2">Player 2</option>
                 </select>
             </div>
+
 
             <div class="name-group">
                 <label>Animation Speed:</label>
@@ -44,14 +56,14 @@
                 </select>
             </div>
 
-            <button type="button" id="reloadButton">Reset Board</button>
+            <button type="button" id="reloadButton">Set Board</button>
 
             <h1>Congkak Rules</h1>
             <div class="rules">
                 <p>Pick up all pieces from one of your houses and distribute them clockwise, dropping one piece into each house. Be sure to drop a piece into your storehouse but skip your opponent’s storehouse.</p>
                 <p>If your last piece lands in a house with pieces, pick them all up and continue distributing them clockwise around the board.</p>
                 <p>If your last piece lands in your storehouse, choose any house on your side and take another turn.</p>
-                <p>If your last piece lands in an empty house on your side, place all pieces from the house directly across into your storehouse. This ends your turn immediately.</p>
+                <p>If your last piece lands in an empty house on your side, place all pieces from the house and your final piece directly across into your storehouse. This ends your turn immediately.</p>
                 <p>If your last piece lands in an empty house on your opponent’s side, your turn ends immediately.</p>
                 <p>Alternate turns until all pieces are moved into the storehouses. The player with the most pieces in their storehouse wins.</p>
             </div>

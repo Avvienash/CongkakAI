@@ -29,9 +29,13 @@ function moveBoard(board, h, player) {
                 if (player === 0 && i < 7) {
                     board[7] += board[14 - i];
                     board[14 - i] = 0;
+                    board[7] += 1;
+                    board[i] = 0;
                 } else if (player === 1 && i > 7) {
                     board[15] += board[14 - i];
                     board[14 - i] = 0;
+                    board[15] += 1;
+                    board[i] = 0;
                 }
                 nextPlayer = (player + 1) % 2;
                 return [board, nextPlayer];
@@ -82,7 +86,8 @@ function hashBoard(board) {
     return filteredBoard.join(",");
 }
 
-function minmaxAlphaBetaPruningHash(board, player, depth, alpha, beta) {
+function minmaxAlphaBetaPruningHash(board, player, depth, alpha, beta)
+{
     if (gameover(board) || depth === 0) {
         return calculateScore(board);
     }
@@ -101,10 +106,12 @@ function minmaxAlphaBetaPruningHash(board, player, depth, alpha, beta) {
     for (const move of moves) {
         const [newBoard, nextPlayer] = moveBoard([...board], move, player);
         const score = minmaxAlphaBetaPruningHash(newBoard, nextPlayer, depth - 1, alpha, beta);
-        if (player === 0) {
+        if (player === 0)
+        {
             bestScore = Math.max(bestScore, score);
             alpha = Math.max(alpha, score);
-            if (beta <= alpha) {
+            if (beta <= alpha)
+            {
                 break;
             }
         } else {
@@ -120,7 +127,8 @@ function minmaxAlphaBetaPruningHash(board, player, depth, alpha, beta) {
     return bestScore;
 }
 
-function bestMoveMinmaxAlphaBetaPruningHash(board, player, depth) {
+function bestMoveMinmaxAlphaBetaPruningHash(board, player, depth,max_player) 
+{
     let bestScore = player === 0 ? -Infinity : Infinity;
     let bestMove = null;
     let alpha = -Infinity;
@@ -131,8 +139,11 @@ function bestMoveMinmaxAlphaBetaPruningHash(board, player, depth) {
     {
         const newBoard = [...board];
         const [updatedBoard, nextPlayer] = moveBoard(newBoard, move, player);
-        const score = minmaxAlphaBetaPruningHash(updatedBoard, nextPlayer, depth - 1, alpha, beta);
-        console.log("Move: ", move, " Score: ", score);
+        let score = minmaxAlphaBetaPruningHash(updatedBoard, nextPlayer, depth - 1, alpha, beta);
+        if (max_player === 1)
+        {
+            score = -score;
+        }
         if ((player === 0 && score > bestScore) || (player === 1 && score < bestScore)) {
             bestScore = score;
             bestMove = move;
