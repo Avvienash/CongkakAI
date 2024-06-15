@@ -212,6 +212,8 @@ class Congkak
 
     initialisation_marbles()
     {
+        transpositionTable = {};
+
         this.board = [7,7,7,7,7,7,7,0,7,7,7,7,7,7,7,0];
         this.display_text = 'Click Set Board to Begin';
         this.marbles_selected_color = marble_color;
@@ -758,6 +760,7 @@ class Congkak
 
     update()
     {
+        transpositionTable = {};
         if (ResetButtonClicked)
         {
             ResetButtonClicked = false;

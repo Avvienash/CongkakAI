@@ -26,12 +26,14 @@ function moveBoard(board, h, player) {
                 stones = board[i];
                 board[i] = 0;
             } else if (board[i] === 1) {
-                if (player === 0 && i < 7) {
+                if (player === 0 && i < 7 && board[14 - i] > 0)
+                {
                     board[7] += board[14 - i];
                     board[14 - i] = 0;
                     board[7] += 1;
                     board[i] = 0;
-                } else if (player === 1 && i > 7) {
+                } else if (player === 1 && i > 7 && i < 15 && board[14 - i] > 0)
+                {
                     board[15] += board[14 - i];
                     board[14 - i] = 0;
                     board[15] += 1;
