@@ -1,4 +1,4 @@
-### Congkak Simple Min Max Algorithm Demo
+### Congkak Simple Min Max Algorithm Demo using Vanila JavaScript (Weekend Project)
 
 Congkak is a traditional Southeast Asian board game with specific gameplay rules:
 - Players pick up pieces from their houses and distribute them clockwise.
